@@ -1,6 +1,6 @@
 // The calculation state is independent of the DOM and can be checked with Node.
 export class Calculator {
-  constructor() { this.memory = null; this.reset(); }
+  constructor() { this.memory = null; this.history = []; this.reset(); }
   reset() {
     this.input = '0'; this.accumulator = null; this.operator = null;
     this.waiting = false; this.finished = false; this.error = false;
@@ -51,6 +51,8 @@ export class Calculator {
     this.setNumber(this.calculate(a, operator, b));
     if (this.error) return;
     this.expression = `${a} ${operator} ${b} =`;
+    this.history.unshift({ expression: this.expression, result: this.input });
+    this.history = this.history.slice(0, 10);
     this.lastOperator = operator; this.lastOperand = b;
     this.operator = null; this.accumulator = null; this.waiting = false; this.finished = true;
   }
@@ -101,4 +103,12 @@ export class Calculator {
     if (!this.operator) this.expression = '';
   }
   memoryClear() { this.memory = null; }
+  historyClear() { this.history = []; }
+  historyRecall(index) {
+    if (!Number.isInteger(index) || !this.history[index]) return;
+    const result = this.history[index].result;
+    this.reset();
+    this.input = result;
+    this.replaceInput = true;
+  }
 }

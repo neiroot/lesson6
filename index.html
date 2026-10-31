@@ -46,6 +46,16 @@
         <button data-action="decimal" aria-label="Десятичная запятая">,</button>
         <button class="operator equals" data-action="equals" aria-label="Равно">=</button>
       </div>
+      <details class="history-panel">
+        <summary>История вычислений <span id="history-count">0</span></summary>
+        <div class="history-toolbar">
+          <span>Последние 10 результатов</span>
+          <button data-action="historyClear" aria-label="Очистить историю" disabled>Очистить</button>
+        </div>
+        <p id="history-empty">Здесь появятся ваши вычисления.<br>Нажмите =, чтобы сохранить результат.</p>
+        <ol id="history-list" aria-label="История вычислений"></ol>
+        <p class="history-hint" id="history-hint" hidden>Нажмите результат, чтобы продолжить вычисления с ним.</p>
+      </details>
       <footer>Просто считайте.<span>С клавиатуры тоже работает</span></footer>
     </main>
   </body>

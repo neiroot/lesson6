@@ -90,3 +90,47 @@ test('переполнение памяти не затирает сохранё
   const c = new Calculator(); c.input = '1e308'; c.memoryStore(); c.memoryAdd();
   assert.equal(c.error, true); assert.equal(c.memory, 1e308); c.memoryRecall(); assert.equal(c.error, false);
 });
+
+test('история хранит выражение и округлённый результат, включая повтор равно', () => {
+  const c = new Calculator(); enter(c, '0.1'); c.chooseOperator('+'); enter(c, '0.2'); c.equals();
+  assert.deepEqual(c.history, [{ expression: '0.1 + 0.2 =', result: '0.3' }]);
+  c.equals(); assert.deepEqual(c.history[0], { expression: '0.3 + 0.2 =', result: '0.5' });
+  assert.equal(c.history.length, 2);
+});
+
+test('история ограничена десятью записями, новые результаты идут первыми', () => {
+  const c = new Calculator(); enter(c, 0); c.chooseOperator('+'); enter(c, 1);
+  for (let i = 0; i < 12; i++) c.equals();
+  assert.equal(c.history.length, 10);
+  assert.equal(c.history[0].result, '12'); assert.equal(c.history[9].result, '3');
+});
+
+test('AC и ошибки не стирают историю, ошибочные операции не добавляются', () => {
+  const c = new Calculator(); enter(c, 2); c.chooseOperator('+'); enter(c, 3); c.equals();
+  c.clear(); c.clear(); c.reset();
+  enter(c, 1); c.chooseOperator('/'); enter(c, 0); c.equals();
+  assert.equal(c.error, true); assert.equal(c.history.length, 1); assert.equal(c.history[0].result, '5');
+  const another = new Calculator(); assert.deepEqual(another.history, []);
+});
+
+test('результат из истории начинает новое вычисление, сохраняя память', () => {
+  const c = new Calculator(); enter(c, 5); c.memoryStore(); c.chooseOperator('+'); enter(c, 2); c.equals();
+  c.chooseOperator('*'); enter(c, 4); c.historyRecall(0);
+  assert.equal(c.input, '7'); assert.equal(c.operator, null); assert.equal(c.memory, 5);
+  c.equals(); assert.equal(c.input, '7'); assert.equal(c.history.length, 1);
+  c.chooseOperator('*'); enter(c, 3); c.equals(); assert.equal(c.input, '21');
+  c.historyRecall(1); enter(c, 9); assert.equal(c.input, '9');
+});
+
+test('очистка истории не меняет текущую операцию, память и экран', () => {
+  const c = new Calculator(); enter(c, 5); c.chooseOperator('+'); enter(c, 2); c.equals(); c.memoryStore();
+  c.chooseOperator('*'); c.historyClear();
+  assert.deepEqual(c.history, []); assert.equal(c.input, '7'); assert.equal(c.memory, 7);
+  enter(c, 3); c.equals(); assert.equal(c.input, '21'); assert.equal(c.history.length, 1);
+});
+
+test('несуществующая запись истории игнорируется, сохранённый ноль возвращается', () => {
+  const c = new Calculator(); enter(c, 2); c.chooseOperator('-'); enter(c, 2); c.equals();
+  enter(c, 8); c.historyRecall(-1); c.historyRecall(12); c.historyRecall(0.5); assert.equal(c.input, '8');
+  c.historyRecall(0); assert.equal(c.input, '0'); c.decimal(); enter(c, 3); assert.equal(c.input, '0.3');
+});
