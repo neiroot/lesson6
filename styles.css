@@ -4,7 +4,12 @@ body { margin: 0; min-height: 100svh; display: grid; place-items: center; paddin
 .calculator { width: min(100%, 360px); }
 header { display: flex; align-items: center; gap: 9px; color: #777; font-size: 10px; font-weight: 600; letter-spacing: 2.5px; }
 .status-dot { width: 5px; height: 5px; border-radius: 50%; background: #ff9f0a; }
-.screen { height: 182px; display: flex; flex-direction: column; align-items: flex-end; justify-content: flex-end; padding: 24px 8px 20px; overflow: hidden; }
+.screen { position: relative; height: 182px; display: flex; flex-direction: column; align-items: flex-end; justify-content: flex-end; padding: 24px 8px 20px; overflow: hidden; }
+.memory-indicator { position: absolute; top: 10px; left: 8px; right: 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #ff9f0a; font-size: 12px; line-height: 18px; }
+.memory-keypad { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin-bottom: 14px; }
+.memory-keypad button { aspect-ratio: auto; min-height: 42px; border-radius: 16px; font-size: 15px; color: #ffb444; background: #1c1c1e; }
+button:disabled { opacity: .35; cursor: default; }
+button:disabled:active { transform: none; filter: none; }
 .expression { color: #777; font-size: 17px; min-height: 23px; max-width: 100%; overflow: hidden; white-space: nowrap; margin-bottom: 8px; }
 output { display: block; max-width: 100%; font-size: 80px; font-weight: 300; letter-spacing: -3px; line-height: 1.1; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .keypad { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
@@ -19,6 +24,6 @@ button:active, button.pressed { filter: brightness(1.45); transform: scale(.96);
 footer { padding-top: 30px; text-align: center; color: #777; font-size: 12px; line-height: 1.7; }
 footer span { display: block; color: #4d4d4d; font-size: 11px; }
 @media (max-width: 380px) { .keypad { gap: 10px; } .screen { height: 160px; } button { font-size: 29px; } }
-@media (max-height: 760px) { .screen { height: 140px; } footer { padding-top: 20px; } .calculator { max-width: 340px; } }
-@media (max-height: 650px) { .screen { height: 120px; } header { margin-top: 0; } footer { padding-top: 16px; } .calculator { max-width: 300px; } }
+@media (max-height: 800px) { .screen { height: 140px; } footer { padding-top: 20px; } .calculator { max-width: 320px; } }
+@media (max-height: 650px) { .screen { height: 120px; } header { margin-top: 0; } footer { padding-top: 16px; } .calculator { max-width: 280px; } }
 @media (prefers-reduced-motion: reduce) { button { transition: none; } }

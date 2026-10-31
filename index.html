@@ -14,9 +14,17 @@
     <main class="calculator" aria-label="Калькулятор">
       <header><span class="status-dot" aria-hidden="true"></span> КАЛЬКУЛЯТОР</header>
       <section class="screen" aria-label="Экран калькулятора">
+        <div class="memory-indicator" id="memory-indicator" aria-live="polite" aria-atomic="true"></div>
         <div class="expression" id="expression" aria-hidden="true"></div>
         <output id="display" aria-live="polite" aria-atomic="true">0</output>
       </section>
+      <div class="memory-keypad" role="group" aria-label="Память калькулятора">
+        <button data-action="memoryClear" aria-label="Очистить память" title="Очистить память" disabled>MC</button>
+        <button data-action="memoryRecall" aria-label="Вызвать число из памяти" title="Вызвать число из памяти" disabled>MR</button>
+        <button data-action="memoryStore" aria-label="Сохранить число в память" title="Сохранить число в память">MS</button>
+        <button data-action="memoryAdd" aria-label="Прибавить число к памяти" title="Прибавить число к памяти">M+</button>
+        <button data-action="memorySubtract" aria-label="Вычесть число из памяти" title="Вычесть число из памяти">M−</button>
+      </div>
       <div class="keypad" aria-label="Клавиатура калькулятора">
         <button class="utility" data-action="clear" aria-label="Очистить всё">AC</button>
         <button class="utility" data-action="sign" aria-label="Сменить знак">+/−</button>

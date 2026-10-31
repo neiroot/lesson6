@@ -4,11 +4,17 @@ const calculator = new Calculator();
 const display = document.querySelector('#display');
 const expression = document.querySelector('#expression');
 const clearButton = document.querySelector('[data-action="clear"]');
+const memoryIndicator = document.querySelector('#memory-indicator');
 const symbols = { '*': '×', '/': '÷', '-': '−', '.': ',' };
 const localize = text => text.replace(/[*/.\-]/g, character => symbols[character]);
 
 function render() {
   display.textContent = localize(calculator.input);
+  const hasMemory = calculator.memory !== null;
+  memoryIndicator.textContent = hasMemory ? `M · ${localize(String(calculator.memory))}` : '';
+  memoryIndicator.setAttribute('aria-label', hasMemory ? `В памяти: ${localize(String(calculator.memory))}` : 'Память пуста');
+  document.querySelectorAll('[data-action="memoryRecall"], [data-action="memoryClear"]').forEach(button => { button.disabled = !hasMemory; });
+  document.querySelectorAll('[data-action="memoryStore"], [data-action="memoryAdd"], [data-action="memorySubtract"]').forEach(button => { button.disabled = calculator.error; });
   expression.textContent = calculator.error ? 'Невозможно выполнить операцию' : localize(calculator.expression);
   clearButton.textContent = calculator.input === '0' || calculator.error ? 'AC' : 'C';
   clearButton.setAttribute('aria-label', clearButton.textContent === 'AC' ? 'Очистить всё' : 'Очистить число');
@@ -27,13 +33,15 @@ function activate(action, value) {
   render();
 }
 
-document.querySelector('.keypad').addEventListener('click', event => {
+document.querySelector('.calculator').addEventListener('click', event => {
   const button = event.target.closest('button');
   if (button) activate(button.dataset.action, button.dataset.value);
 });
 
 document.addEventListener('keydown', event => {
   if (event.ctrlKey || event.metaKey || event.altKey || event.repeat) return;
+  // Let Enter activate the focused button through its native click behavior.
+  if (event.key === 'Enter' && event.target.closest('button')) return;
   let action, value;
   if (/^\d$/.test(event.key)) { action = 'digit'; value = event.key; }
   else if (['+', '-', '*', '/'].includes(event.key)) { action = 'operator'; value = event.key; }
