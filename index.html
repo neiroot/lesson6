@@ -46,6 +46,13 @@
         <button data-action="decimal" aria-label="Десятичная запятая">,</button>
         <button class="operator equals" data-action="equals" aria-label="Равно">=</button>
       </div>
+      <section class="ai-panel" aria-labelledby="ai-title">
+        <h2 id="ai-title"><span>AI</span> Объяснение вычисления</h2>
+        <p id="ai-calculation" class="ai-calculation"></p>
+        <button id="explain-button" data-action="explain" disabled>Объяснить результат</button>
+        <p id="ai-explanation" role="status" aria-live="polite">Выполните вычисление и нажмите =.</p>
+        <small>Объяснение AI может содержать неточности.</small>
+      </section>
       <details class="history-panel">
         <summary>История вычислений <span id="history-count">0</span></summary>
         <div class="history-toolbar">

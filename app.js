@@ -7,10 +7,24 @@ const clearButton = document.querySelector('[data-action="clear"]');
 const memoryIndicator = document.querySelector('#memory-indicator');
 const historyList = document.querySelector('#history-list');
 let renderedHistory = null;
+const explainButton = document.querySelector('#explain-button');
+const aiText = document.querySelector('#ai-explanation');
+let aiEntry = '', aiLoading = false, aiExplanation = '', aiError = '', aiController;
 const symbols = { '*': '×', '/': '÷', '-': '−', '.': ',' };
 const localize = text => text.replace(/[*/.\-]/g, character => symbols[character]);
 
 function render() {
+  const latest = calculator.history[0];
+  const entryKey = JSON.stringify(latest ?? null);
+  if (entryKey !== aiEntry) {
+    aiController?.abort(); aiController = undefined;
+    aiEntry = entryKey; aiLoading = false; aiExplanation = ''; aiError = '';
+  }
+  explainButton.disabled = !latest || calculator.error || aiLoading;
+  explainButton.textContent = aiLoading ? 'Объясняю…' : 'Объяснить результат';
+  document.querySelector('.ai-panel').setAttribute('aria-busy', String(aiLoading));
+  document.querySelector('#ai-calculation').textContent = latest ? `${localize(latest.expression)} ${localize(latest.result)}` : '';
+  aiText.textContent = aiLoading ? 'Готовлю короткое объяснение…' : aiError || aiExplanation || (latest ? 'Нажмите кнопку — AI объяснит последнее вычисление.' : 'Выполните вычисление и нажмите =.');
   display.textContent = localize(calculator.input);
   const hasMemory = calculator.memory !== null;
   memoryIndicator.textContent = hasMemory ? `M · ${localize(String(calculator.memory))}` : '';
@@ -51,11 +65,34 @@ function render() {
 }
 
 function activate(action, value) {
+  if (action === 'explain') { void explainCalculation(); return; }
   if (action === 'operator') calculator.chooseOperator(value);
   else if (action === 'digit') calculator.digit(value);
   else if (action === 'historyRecall') calculator.historyRecall(Number(value));
   else calculator[action]();
   render();
+}
+
+async function explainCalculation() {
+  const latest = calculator.history[0];
+  if (!latest || calculator.error || aiLoading) return;
+  const controller = new AbortController();
+  aiController = controller; aiLoading = true; aiError = '';
+  render();
+  try {
+    const response = await fetch('/api/explain', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(latest), signal: controller.signal,
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'AI сейчас недоступен. Попробуйте позже.');
+    if (typeof data.explanation !== 'string' || !data.explanation.trim()) throw new Error('AI вернул пустой ответ. Попробуйте ещё раз.');
+    if (aiController === controller) aiExplanation = data.explanation;
+  } catch (error) {
+    if (!controller.signal.aborted && aiController === controller) aiError = error instanceof SyntaxError ? 'AI сейчас недоступен. Попробуйте позже.' : error.message;
+  } finally {
+    if (aiController === controller) { aiLoading = false; render(); }
+  }
 }
 
 document.querySelector('.calculator').addEventListener('click', event => {

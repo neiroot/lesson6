@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 
 const files = ['index.html', 'styles.css', 'app.js', 'calculator.js'];
 const sources = new Map();
+execFileSync(process.execPath, ['--check', fileURLToPath(new URL('api/explain.js', import.meta.url))], { stdio: 'inherit' });
 
 // Fail before publishing an incomplete application or invalid JavaScript.
 for (const file of files) {
