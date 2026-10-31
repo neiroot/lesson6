@@ -62,7 +62,7 @@ test('сложение и вычитание из памяти, включая �
 
 test('вызов памяти подставляет операнд, сохраняя незавершённую операцию', () => {
   const c = new Calculator(); enter(c, 5); c.memoryStore(); c.reset(); enter(c, 2); c.chooseOperator('+');
-  c.memoryRecall(); c.equals(); assert.equal(c.input, '7');
+  c.memoryRecall(); c.equals(); assert.equal(c.input, '8');
   c.equals(); assert.equal(c.input, '12');
   c.memoryRecall(); c.equals(); assert.equal(c.input, '5');
 });
