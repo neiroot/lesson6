@@ -5,6 +5,8 @@ const display = document.querySelector('#display');
 const expression = document.querySelector('#expression');
 const clearButton = document.querySelector('[data-action="clear"]');
 const memoryIndicator = document.querySelector('#memory-indicator');
+const historyList = document.querySelector('#history-list');
+let renderedHistory = null;
 const symbols = { '*': '×', '/': '÷', '-': '−', '.': ',' };
 const localize = text => text.replace(/[*/.\-]/g, character => symbols[character]);
 
@@ -18,6 +20,28 @@ function render() {
   expression.textContent = calculator.error ? 'Невозможно выполнить операцию' : localize(calculator.expression);
   clearButton.textContent = calculator.input === '0' || calculator.error ? 'AC' : 'C';
   clearButton.setAttribute('aria-label', clearButton.textContent === 'AC' ? 'Очистить всё' : 'Очистить число');
+  if (renderedHistory !== calculator.history) {
+    historyList.replaceChildren();
+    calculator.history.forEach((entry, index) => {
+      const item = document.createElement('li');
+      const button = document.createElement('button');
+      button.dataset.action = 'historyRecall';
+      button.dataset.value = index;
+      button.setAttribute('aria-label', `Вызвать результат: ${localize(entry.expression)} ${localize(entry.result)}`);
+      const calculation = document.createElement('span');
+      calculation.textContent = localize(entry.expression);
+      const result = document.createElement('strong');
+      result.textContent = localize(entry.result);
+      button.append(calculation, result);
+      item.append(button);
+      historyList.append(item);
+    });
+    document.querySelector('#history-count').textContent = calculator.history.length;
+    document.querySelector('#history-empty').hidden = calculator.history.length > 0;
+    document.querySelector('#history-hint').hidden = calculator.history.length === 0;
+    document.querySelector('[data-action="historyClear"]').disabled = calculator.history.length === 0;
+    renderedHistory = calculator.history;
+  }
   document.querySelectorAll('[data-action="operator"]').forEach(button => {
     button.setAttribute('aria-pressed', String(calculator.waiting && calculator.operator === button.dataset.value));
   });
@@ -29,6 +53,7 @@ function render() {
 function activate(action, value) {
   if (action === 'operator') calculator.chooseOperator(value);
   else if (action === 'digit') calculator.digit(value);
+  else if (action === 'historyRecall') calculator.historyRecall(Number(value));
   else calculator[action]();
   render();
 }
@@ -40,6 +65,7 @@ document.querySelector('.calculator').addEventListener('click', event => {
 
 document.addEventListener('keydown', event => {
   if (event.ctrlKey || event.metaKey || event.altKey || event.repeat) return;
+  if (event.key === 'Enter' && event.target.closest('summary')) return;
   // Let Enter activate the focused button through its native click behavior.
   if (event.key === 'Enter' && event.target.closest('button')) return;
   let action, value;
