@@ -82,6 +82,7 @@ export function createExplainHandler({ fetchImpl = globalThis.fetch, env = () =>
       });
       if (!response.ok) {
         // Never return provider errors, request headers or credentials to visitors.
+        console.error('OpenAI request failed with HTTP status', response.status);
         if (response.status === 429) return json(429, { error: 'Лимит AI временно исчерпан. Попробуйте позже.' });
         return json(502, { error: 'AI сейчас недоступен. Попробуйте ещё раз позже.' });
       }
@@ -94,7 +95,8 @@ export function createExplainHandler({ fetchImpl = globalThis.fetch, env = () =>
       if (cache.size >= 50) cache.delete(cache.keys().next().value);
       cache.set(cacheKey, text);
       return json(200, { explanation: text });
-    } catch {
+    } catch (error) {
+      console.error('OpenAI request failed:', error?.name || 'UnknownError');
       return json(502, { error: 'Не удалось дождаться ответа AI. Попробуйте ещё раз.' });
     }
   };
