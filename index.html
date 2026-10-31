@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#000000">
+    <meta name="description" content="Простой калькулятор в стиле iPhone">
+    <title>Калькулятор</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='black'/%3E%3Ctext x='32' y='47' text-anchor='middle' font-size='48' fill='%23ff9f0a'%3E%3D%3C/text%3E%3C/svg%3E">
+    <link rel="stylesheet" href="styles.css">
+    <script type="module" src="app.js"></script>
+  </head>
+  <body>
+    <main class="calculator" aria-label="Калькулятор">
+      <header><span class="status-dot" aria-hidden="true"></span> КАЛЬКУЛЯТОР</header>
+      <section class="screen" aria-label="Экран калькулятора">
+        <div class="expression" id="expression" aria-hidden="true"></div>
+        <output id="display" aria-live="polite" aria-atomic="true">0</output>
+      </section>
+      <div class="keypad" aria-label="Клавиатура калькулятора">
+        <button class="utility" data-action="clear" aria-label="Очистить всё">AC</button>
+        <button class="utility" data-action="sign" aria-label="Сменить знак">+/−</button>
+        <button class="utility" data-action="percent" aria-label="Процент">%</button>
+        <button class="operator" data-action="operator" data-value="/" aria-label="Разделить" aria-pressed="false">÷</button>
+        <button data-action="digit" data-value="7">7</button>
+        <button data-action="digit" data-value="8">8</button>
+        <button data-action="digit" data-value="9">9</button>
+        <button class="operator" data-action="operator" data-value="*" aria-label="Умножить" aria-pressed="false">×</button>
+        <button data-action="digit" data-value="4">4</button>
+        <button data-action="digit" data-value="5">5</button>
+        <button data-action="digit" data-value="6">6</button>
+        <button class="operator" data-action="operator" data-value="-" aria-label="Вычесть" aria-pressed="false">−</button>
+        <button data-action="digit" data-value="1">1</button>
+        <button data-action="digit" data-value="2">2</button>
+        <button data-action="digit" data-value="3">3</button>
+        <button class="operator" data-action="operator" data-value="+" aria-label="Прибавить" aria-pressed="false">+</button>
+        <button class="zero" data-action="digit" data-value="0">0</button>
+        <button data-action="decimal" aria-label="Десятичная запятая">,</button>
+        <button class="operator equals" data-action="equals" aria-label="Равно">=</button>
+      </div>
+      <footer>Просто считайте.<span>С клавиатуры тоже работает</span></footer>
+    </main>
+  </body>
+</html>

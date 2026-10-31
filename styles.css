@@ -1,0 +1,24 @@
+:root { color-scheme: dark; font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif; background: #000; color: #fff; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100svh; display: grid; place-items: center; padding: max(24px, env(safe-area-inset-top)) 20px max(24px, env(safe-area-inset-bottom)); }
+.calculator { width: min(100%, 360px); }
+header { display: flex; align-items: center; gap: 9px; color: #777; font-size: 10px; font-weight: 600; letter-spacing: 2.5px; }
+.status-dot { width: 5px; height: 5px; border-radius: 50%; background: #ff9f0a; }
+.screen { height: 182px; display: flex; flex-direction: column; align-items: flex-end; justify-content: flex-end; padding: 24px 8px 20px; overflow: hidden; }
+.expression { color: #777; font-size: 17px; min-height: 23px; max-width: 100%; overflow: hidden; white-space: nowrap; margin-bottom: 8px; }
+output { display: block; max-width: 100%; font-size: 80px; font-weight: 300; letter-spacing: -3px; line-height: 1.1; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.keypad { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+button { border: 0; border-radius: 50%; aspect-ratio: 1; background: #333; color: #fff; font: inherit; font-size: 33px; font-weight: 400; cursor: pointer; -webkit-tap-highlight-color: transparent; touch-action: manipulation; user-select: none; transition: background .12s, transform .12s; }
+button.utility { background: #a5a5a5; color: #000; font-size: 27px; }
+button.operator { background: #ff9f0a; font-size: 39px; }
+button.operator[aria-pressed="true"] { background: #fff; color: #ff9f0a; }
+button.zero { grid-column: span 2; aspect-ratio: auto; border-radius: 100px; text-align: left; padding-left: calc((100% - 12px) / 4 - 9px); }
+button:focus-visible { outline: 3px solid #fff; outline-offset: 4px; }
+button:active, button.pressed { filter: brightness(1.45); transform: scale(.96); }
+@media (hover: hover) { button:hover { background: #505050; } button.utility:hover { background: #ccc; } button.operator:hover { background: #ffb444; } }
+footer { padding-top: 30px; text-align: center; color: #777; font-size: 12px; line-height: 1.7; }
+footer span { display: block; color: #4d4d4d; font-size: 11px; }
+@media (max-width: 380px) { .keypad { gap: 10px; } .screen { height: 160px; } button { font-size: 29px; } }
+@media (max-height: 760px) { .screen { height: 140px; } footer { padding-top: 20px; } .calculator { max-width: 340px; } }
+@media (max-height: 650px) { .screen { height: 120px; } header { margin-top: 0; } footer { padding-top: 16px; } .calculator { max-width: 300px; } }
+@media (prefers-reduced-motion: reduce) { button { transition: none; } }

@@ -1,0 +1,24 @@
+.vercel/
+node_modules/
+dist/
+.DS_Store
+
+# Local secrets and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.json
+service-account*.json
+secrets*.json
+
+# Logs, caches and editor files
+*.log
+.cache/
+coverage/
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
